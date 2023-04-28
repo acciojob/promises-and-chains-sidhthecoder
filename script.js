@@ -1,31 +1,34 @@
-const form = document.getElementById('myForm');
-const submitBtn = document.getElementById('btn');
+const form=document.querySelector('#myForm');
+const nameInput=document.querySelector('#name');
+const ageInput=document.querySelector('#age');
+const btn=document.querySelector('#btn');
 
-// Add an event listener to the form for form submission
-form.addEventListener('submit', function(event) {
-  event.preventDefault(); // prevent the default form submission behavior
+form.addEventListener('submit',(event)=>{
+	event.preventDefault();
 
-  // Select the input values
-  const name = document.getElementById('name').value;
-  const age = document.getElementById('age').value;
+	if(nameInput.value==='' || ageInput.value===''){
+		alert('Please fill out all fields');
+		return;
+	}
 
-  // Validate the inputs
-  if (name === '' || age === '') {
-    alert('Please fill in all fields');
-    return;
-  }
+	const age=parseInt(ageInput.value);
 
-  // Create a promise that resolves after 4 seconds
-  const promise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (age >= 18) {
-        resolve(`Welcome, ${name}. You can vote.`);
-      } else {
-        reject(`Oh sorry ${name}. You aren't old enough.`);
-      }
-    }, 4000);
-  });
+	const promise=new Promise((resolve,reject)=>{
+		setTimeout(()=>{
+			if(age>=18){
+				resolve();
+			}
+			else{
+				reject();
+			}
+		},4000);
+	});
+
+
 promise
-.then((message) => alert(message))
-.catch((error) => alert(error));
+.then(()=>{
+	alert(`Welcome, ${nameInput.value}. You can vote.`);
+}).catch(()=>{
+	alert(`Oh sorry ${nameInput.value}. You aren't old enough.`);
+});
 });
