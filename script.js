@@ -1,34 +1,52 @@
-const form=document.querySelector('#myForm');
-const nameInput=document.querySelector('#name');
-const ageInput=document.querySelector('#age');
-const btn=document.querySelector('#btn');
+const res = document.getElementById("output");
 
-form.addEventListener('submit',(event)=>{
-	event.preventDefault();
+const promises = [
+  new Promise((resolve) => {
+    const time = Math.floor(Math.random() * 3 + 1) * 1000;
+    setTimeout(() => resolve({ name: "Promise 1", time: time / 1000 }), time);
+  }),
+  new Promise((resolve) => {
+    const time = Math.floor(Math.random() * 3 + 1) * 1000;
+    setTimeout(() => resolve({ name: "Promise 2", time: time / 1000 }), time);
+  }),
+  new Promise((resolve) => {
+    const time = Math.floor(Math.random() * 3 + 1) * 1000;
+    setTimeout(() => resolve({ name: "Promise 3", time: time / 1000 }), time);
+  }),
+];
 
-	if(nameInput.value==='' || ageInput.value===''){
-		alert('Please fill out all fields');
-		return;
-	}
+async function callFns() {
+  const start = new Date();
+  // Use Promise.all to wait for all Promises to resolve
+  res.innerHTML += `
+            <tr id="loading">
+                <td colspan=2>Loading...</td>
+            </tr>
+          `;
+  await Promise.all(promises)
+    .then((results) => {
+      res.innerHTML = ``;
+      // Log the array of results
+      results.forEach((e) => {
+        res.innerHTML += `
+            <tr>
+                <td>${e.name}</td>
+                <td>${e.time}</td>
+            </tr>
+          `;
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
-	const age=parseInt(ageInput.value);
-
-	const promise=new Promise((resolve,reject)=>{
-		setTimeout(()=>{
-			if(age>=18){
-				resolve();
-			}
-			else{
-				reject();
-			}
-		},4000);
-	});
-
-
-promise
-.then(()=>{
-	alert(`Welcome, ${nameInput.value}. You can vote.`);
-}).catch(()=>{
-	alert(`Oh sorry ${nameInput.value}. You aren't old enough.`);
-});
-});
+  const end = new Date();
+  const timeInMillis = end - start;
+  res.innerHTML += `
+            <tr>
+                <td>Total</td>
+                <td>${timeInMillis / 1000}</td>
+            </tr>
+          `;
+}
+callFns();
